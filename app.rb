@@ -5,6 +5,12 @@ require 'sinatra/activerecord'
 
 set :database "sqlite3:pizzashop.sqlite"
 
+class Product < ActiveRecord::Base
+end
+
+class Order <ActiveRecord::Base
+end
+
 configure do
   enable :sessions
 end
@@ -33,16 +39,30 @@ get '/about' do
   erb :about
 end
 
+post '/place_order' do
+  @order = Order.create params[:order]
+  erb :oreder_placed
+end
+
 post '/cart' do
-  @orders_input = params[:orders]
+  # get params list and parse it
+  @orders_input = params[:orders_input]
   @items = parse_orders_line @orders_input
+
+  # output info about empty cart
+
+  if @items.length == 0
+    return erb :cart_is_empty
+  end
+
+  # output list of items in cart
 
   @items.each do |item|
     # item = [id, cnt]
     item[0] = Product.find(item[0])
   end
 
-
+  # back view
 
   erb :cart
 end
