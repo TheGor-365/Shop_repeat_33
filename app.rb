@@ -1,5 +1,9 @@
 require 'rubygems'
 require 'sinatra'
+require 'sinatra/reloader'
+require 'sinatra/activerecord'
+
+set :database "sqlite3:pizzashop.sqlite"
 
 configure do
   enable :sessions
@@ -20,7 +24,17 @@ before '/secure/*' do
 end
 
 get '/' do
-  erb 'Can you handle a <a href="/secure/place">secret</a>?'
+  @message = 'Can you handle a <a class="text-decoration-none" href="/secure/place">secret</a>?'
+  @products = Product.all
+  erb :index
+end
+
+get '/about' do
+  erb :about
+end
+
+post '/cart' do
+  erb 'Hello'
 end
 
 get '/login/form' do
